@@ -3,15 +3,15 @@
 空视图由`上方式图`、`中间视图`、`下房视图`三部分构成，而这三个视图类型都是同一个`FFComposeView`。  
 
 
-而`FFComposeView`是一个由图片和文本组成的视图，可以调整图片和文本的间距，图片相对文本的位置`FFComposeType`上左下右，以及`边框`，`圆角`，和代替背景色的填充色`fillColor` ,并且可以响应点击事件 。图片和文本都可以只存在一个，当只有图片和文本的时候默认居中显示。
+而`FFComposeView`是一个由`image`和`text`组成的视图，可以调整`image`和`text`的间距，`image`相对`text`的位置(详见`FFComposeType`)，以及`边框`，`圆角`，和代替背景色的填充色`fillColor` ,并且可以响应点击事件 。`image`和`text`都可以只存在一个，当只有`image`或`text`的时候默认居中显示。
 ```
 
 typedef NS_OPTIONS(NSUInteger, FFComposeType) {
 
-    FFComposeTypeImageTop           = 0, //图片在上
-    FFComposeTypeImageLeft          = 1, //图片在左
-    FFComposeTypeImageBottom        = 2, //图片在下
-    FFComposeTypeImageRight         = 3  //图片在右
+FFComposeTypeImageTop           = 0, //图片在上
+FFComposeTypeImageLeft          = 1, //图片在左
+FFComposeTypeImageBottom        = 2, //图片在下
+FFComposeTypeImageRight         = 3  //图片在右
 }
 ```
 ```
@@ -85,16 +85,16 @@ self.view.emptyView.topCompose.speacing = 6;
 ```
 也可以简写为
 ```
-    self.view.compose.image = [UIImage imageNamed:@"beianbgs"];
-    self.view.compose.text = @"NO Message";
-    self.view.compose.composeType = FFComposeTypeImageTop;
-    self.view.compose.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    self.view.compose.speacing = 6;
+self.view.compose.image = [UIImage imageNamed:@"beianbgs"];
+self.view.compose.text = @"NO Message";
+self.view.compose.composeType = FFComposeTypeImageTop;
+self.view.compose.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
+self.view.compose.speacing = 6;
 ```
 原理是
 ```
 - (FFCompose *)compose {
-    return self.emptyView.topCompose;
+return self.emptyView.topCompose;
 }
 ```
 
@@ -121,5 +121,5 @@ self.view.emptyView.topCompose.speacing = 6;
 
 ```
 
-#最后
-UITableView 和 UICollectionView 会根据数据自动显示隐藏，且首次在网络请求不会显示
+# 最后
+`UITableView` 和 `UICollectionView` 会根据数据自动显示隐藏，且首次在网络请求不会显示，其他view不支持自动显示隐藏。
