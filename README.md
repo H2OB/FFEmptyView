@@ -1,8 +1,9 @@
 # FFEmptyView
--
+
 空视图由`上方式图`、`中间视图`、`下房视图`三部分构成，而这三个视图类型都是同一个`FFComposeView`。  
--
-`FFComposeView`是一个由图片和文本组成的视图，可以调整图片和文本的间距，图片相对文本的位置`FFComposeType`上左下右，以及`边框`，`圆角`，和代替背景色的填充色`fillColor` ,并且可以响应点击事件   
+
+
+而`FFComposeView`是一个由图片和文本组成的视图，可以调整图片和文本的间距，图片相对文本的位置`FFComposeType`上左下右，以及`边框`，`圆角`，和代替背景色的填充色`fillColor` ,并且可以响应点击事件 。图片和文本都可以只存在一个，当只有图片和文本的时候默认居中显示。
 ```
 
 typedef NS_OPTIONS(NSUInteger, FFComposeType) {
@@ -12,9 +13,9 @@ typedef NS_OPTIONS(NSUInteger, FFComposeType) {
     FFComposeTypeImageBottom        = 2, //图片在下
     FFComposeTypeImageRight         = 3  //图片在右
 }
-
 ```
-/// 组合类型
+```
+/// 组合类型 即图片相对文本的位置
 @property (assign, nonatomic) FFComposeType composeType;
 
 #pragma mark - 尺寸
@@ -32,7 +33,7 @@ typedef NS_OPTIONS(NSUInteger, FFComposeType) {
 /// 图片
 @property (retain, nonatomic) UIImage * image;
 
-/// 图片固定大小 如果为CGSizeZero 图片大小为原始大小
+/// 固定图片大小默认 CGSizeZero 如果不想图片原始大小显示可在这里设置大小
 @property (assign, nonatomic) CGSize imageFixedSize;
 
 #pragma mark - 文字
@@ -67,5 +68,58 @@ typedef NS_OPTIONS(NSUInteger, FFComposeType) {
 
 
 #pragma mark - 点击
-/// 点击回调
+/// 点击回调 如果需要请调用
 @property (copy, nonatomic) void(^touchBlock)(void);
+```
+
+至此，我们就可以设置我们想要显示的空视图了
+
+# 使用
+如果指向显示一个图片和一段文字(或者只有图片文字中的一个)
+```
+self.view.emptyView.topCompose.image = [UIImage imageNamed:@"beianbgs"];
+self.view.emptyView.topCompose.text = @"NO Message";
+self.view.emptyView.topCompose.composeType = FFComposeTypeImageLeft;
+self.view.emptyView.topCompose.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
+self.view.emptyView.topCompose.speacing = 6;
+```
+也可以简写为
+```
+    self.view.compose.image = [UIImage imageNamed:@"beianbgs"];
+    self.view.compose.text = @"NO Message";
+    self.view.compose.composeType = FFComposeTypeImageTop;
+    self.view.compose.contentInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    self.view.compose.speacing = 6;
+```
+原理是
+```
+- (FFCompose *)compose {
+    return self.emptyView.topCompose;
+}
+```
+
+而中间和下方设置相同如果你想把它变成一个按钮那么你需要设置它的
+```
+/// 边框宽度
+@property (assign, nonatomic) CGFloat  boderWidth;
+
+/// 边框颜色
+@property (retain, nonatomic) UIColor * boderColor;
+
+/// 圆角
+@property (assign, nonatomic) CGFloat radius;
+
+
+#pragma mark - 背景
+/// 填充颜色 用于代替背景色
+@property (retain, nonatomic) UIColor * fillColor;
+
+
+#pragma mark - 点击
+/// 点击回调 如果需要请调用
+@property (copy, nonatomic) void(^touchBlock)(void);
+
+```
+
+#最后
+UITableView 和 UICollectionView 会根据数据自动显示隐藏，且首次在网络请求不会显示
