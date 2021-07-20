@@ -91,7 +91,17 @@
 - (void)showEmptyView{
     
     if ([self.emptyView isEmpty]) return;
-    [self addSubview:self.emptyView];
+    
+    if (!self.emptyView.superview) {
+        
+        CATransition * transition = [CATransition animation];
+        transition.type = kCATransitionFade;
+        transition.duration = 0.1;
+        [self addSubview:self.emptyView];
+        [self.layer addAnimation:transition forKey:nil];
+    }
+    
+    
     
 }
 
