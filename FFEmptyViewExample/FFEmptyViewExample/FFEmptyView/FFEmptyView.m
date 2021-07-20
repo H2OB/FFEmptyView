@@ -51,21 +51,40 @@
     
 }
 
-- (void)didMoveToSuperview{
+- (void)willMoveToSuperview:(UIView *)newSuperview{
+    [super willMoveToSuperview:newSuperview];
     
-    [self autoAdaptionSize];
-    
-    __weak typeof(self) weakSelf = self;
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIDeviceOrientationDidChangeNotification object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
+    if (newSuperview) {
         
-        [weakSelf autoAdaptionSize];
-    }];
+        [self autoAdaptionSize:newSuperview];
+        [newSuperview addObserver:self forKeyPath:@"bounds" options:NSKeyValueObservingOptionNew context:nil];
+    }
+
 }
 
-- (void)autoAdaptionSize{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     
-    CGFloat maxWidth = CGRectGetWidth(self.superview.bounds);
+    if ([keyPath isEqualToString:@"bounds"]) {
+        
+        if (self.superview) {
+            [self autoAdaptionSize:self.superview];
+        }
+    
+    }
+    
+}
+
+- (void)removeFromSuperview{
+    
+    [self.superview removeObserver:self forKeyPath:@"bounds"];
+    [super removeFromSuperview];
+}
+
+
+- (void)autoAdaptionSize:(UIView *)view{
+    
+    CGFloat maxWidth = CGRectGetWidth(view.bounds);
+    CGFloat maxHeight = CGRectGetHeight(view.bounds);
     
     self.topCompose.maxWidth = self.topCompose.maxWidth > 0 ? self.topCompose.maxWidth : maxWidth;
     self.middleCompose.maxWidth = self.middleCompose.maxWidth > 0 ? self.middleCompose.maxWidth : maxWidth;
@@ -119,11 +138,12 @@
     
     self.frame = frame;
     
-    CGPoint center = CGPointMake(CGRectGetMidX(self.superview.bounds), CGRectGetMidY(self.superview.bounds));
+    CGPoint center = CGPointMake(maxWidth/2.0, maxHeight/2.0);
     center.x += self.centerOffsets.x;
     center.y += self.centerOffsets.y;
     
     self.center = center;
+   
 
 }
 
